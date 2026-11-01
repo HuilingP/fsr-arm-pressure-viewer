@@ -1,0 +1,31 @@
+.demo-shell { max-width:1300px; margin:auto; padding:38px 28px 24px; }
+.demo-header { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:25px; }
+.demo-header h1 { font-size:30px; margin:0 0 10px; letter-spacing:-.7px; }
+.demo-header p:last-child { margin:0; color:#718195; font-size:13px; }
+.demo-header nav { display:flex; gap:18px; align-items:center; flex-shrink:0; }
+.demo-header a { color:#35566f; text-decoration:none; font-size:13px; font-weight:650; }
+.demo-header .download { border:1px solid #cad8e3; border-radius:8px; padding:11px 14px; background:white; }
+.demo-banner { border:1px solid #e5dbc1; background:#fff9ea; color:#786335; border-radius:12px; padding:13px 17px; display:flex; align-items:center; gap:14px; line-height:1.7; font-size:12px; }
+.demo-banner strong { color:#845b17; white-space:nowrap; }
+.scenario-bar { display:flex; align-items:center; justify-content:space-between; gap:20px; margin:23px 0; }
+.scenario-label { display:block; font-size:11px; font-weight:650; color:#6a7b8e; margin-bottom:8px; }
+.scenario-buttons { display:flex; gap:6px; flex-wrap:wrap; }
+.scenario-buttons button { color:#5b7085; background:transparent; border-color:#d8e1e9; font-size:12px; min-height:36px; padding:0 13px; }
+.scenario-buttons button[aria-pressed="true"] { color:white; background:#2e4b60; border-color:#2e4b60; }
+#pauseDemo { font-size:12px; flex-shrink:0; }
+.demo-label { color:#8b6628; }
+.pressure-panel { box-shadow:0 15px 45px #243b5a06; }
+.manual-panel { background:white; border:1px solid #dfe6ef; border-radius:14px; padding:25px; margin-top:20px; }
+.manual-panel h2 { font-size:20px; }
+.manual-panel p { font-size:12px; color:#738498; margin:8px 0 20px; }
+.slider-groups { display:grid; grid-template-columns:1fr 1fr; gap:50px; }
+.slider-groups h3 { font-size:13px; color:#4d657a; }
+.slider-row { display:grid; grid-template-columns:25px 1fr 60px; align-items:center; gap:12px; font-size:12px; margin:9px 0; }
+.slider-row input { accent-color:#2c687b; min-height:25px; padding:0; }
+.slider-row output { text-align:right; font-variant-numeric:tabular-nums; }
+.demo-footer { display:grid; grid-template-columns:1.3fr 1fr; gap:50px; margin-top:30px; padding:28px 5px; border-top:1px solid #dce5ec; }
+.demo-footer h2 { font-size:18px; }
+.demo-footer h3 { font-size:14px; margin-bottom:8px; }
+.demo-footer p { font-size:12px; color:#738398; line-height:1.9; margin:10px 0 0; }
+.demo-disclaimer { font-size:11px; color:#8995a4; text-align:center; padding-top:15px; border-top:1px solid #e4ebf0; }
+@media(max-width:760px) { .demo-shell { padding:24px 14px; } .demo-header { flex-direction:column; align-items:flex-start; } .demo-header h1 { font-size:27px; } .demo-banner { align-items:flex-start; } .scenario-bar { align-items:flex-end; gap:8px; } .scenario-buttons button { font-size:11px; padding:0 10px; } .slider-groups,.demo-footer { grid-template-columns:1fr; gap:20px; } }

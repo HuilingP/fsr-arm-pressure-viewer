@@ -1,0 +1,16 @@
+{
+  "A": {
+    "label": "左侧 · 黑色板",
+    "side": "left",
+    "color": "black",
+    "serial_number": "REPLACE_A_USB_SERIAL",
+    "board_id": "REPLACE_A_BOARD_ID"
+  },
+  "B": {
+    "label": "右侧 · 白色板",
+    "side": "right",
+    "color": "white",
+    "serial_number": "REPLACE_B_USB_SERIAL",
+    "board_id": "REPLACE_B_BOARD_ID"
+  }
+}

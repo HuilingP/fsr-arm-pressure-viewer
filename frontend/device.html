@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESP32-C3 Super Mini Duo v2 · Device Monitor</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="device-monitor">
+    <main class="app-shell">
+      <header class="topbar panel-surface">
+        <div>
+          <p class="eyebrow">RIGIDITY ASSESS / BNO080 + 8 FSR</p>
+          <h1>ESP32-C3 Super Mini Monitor</h1>
+          <p id="connectionText" class="muted">Waiting for the local acquisition service.</p>
+        </div>
+        <div id="statusPill" class="status-pill" aria-live="polite">
+          <span class="status-dot"></span><span id="statusLabel">Disconnected</span>
+        </div>
+      </header>
+
+      <section class="toolbar panel-surface" aria-label="Connection controls">
+        <label class="control-group">数据来源
+          <select id="source">
+            <option value="usb">USB 串口</option>
+            <option value="wifi">Wi-Fi / TCP</option>
+            <option value="demo">模拟演示（非真实数据）</option>
+          </select>
+        </label>
+        <label id="usbFields" class="control-group grow">串口设备
+          <select id="port"><option value="">Loading ports…</option></select>
+        </label>
+        <label id="wifiFields" class="control-group grow" hidden>Device IP
+          <input id="host" value="" placeholder="192.168.1.100" spellcheck="false" />
+          <select id="discovered" aria-label="Discovered ESP32 IP addresses" hidden></select>
+        </label>
+        <label class="control-group">波形时间窗
+          <select id="historySeconds">
+            <option value="2">2 s</option><option value="5">5 s</option>
+            <option value="10" selected>10 s</option><option value="20">20 s</option>
+            <option value="30">30 s</option><option value="60">60 s</option>
+          </select>
+        </label>
+        <div class="toolbar-actions">
+          <button id="refresh" class="secondary" type="button">刷新串口</button>
+          <button id="discover" class="secondary" type="button" hidden>Discover</button>
+          <button id="connect" type="button">连接</button>
+          <button id="disconnect" class="secondary" type="button" disabled>断开</button>
+          <button id="zero" class="secondary" type="button" disabled>当前姿态归零</button>
+        </div>
+      </section>
+
+      <p id="message" class="message" role="status" aria-live="polite">Connect starts live acquisition only. Use the shared Record button above both device panels.</p>
+
+      <section class="status-grid" aria-label="Acquisition status">
+        <article><span>采样速率</span><strong id="metric-input_rate">-- Hz</strong></article>
+        <article><span>采样间隔</span><strong id="metric-sample_dt">-- ms</strong></article>
+        <article><span>设备时间</span><strong id="metric-device_time">-- s</strong></article>
+        <article><span>实时缓存</span><strong id="metric-retained_rows">0 rows</strong></article>
+        <article><span>数据质量</span><strong id="metric-frame_health">0 rejected / 0 missing</strong></article>
+        <article><span>零偏校准（保持静止）</span><strong id="metric-calibration">Hold still · 0 / 200</strong></article>
+        <article><span>速度估计质量</span><strong id="metric-velocity_quality">--</strong></article>
+        <article class="wide"><span>BNO Accuracy · Accel / Gyro / Linear / Quat</span><strong id="metric-report_status">--</strong></article>
+        <article class="wide"><span>Relative Attitude</span><strong id="metric-attitude_quality">Waiting for quaternion</strong></article>
+        <article class="wide"><span>Pipeline</span><strong id="metric-pipeline">Acquisition stopped</strong></article>
+        <article class="wide"><span>Recording</span><strong id="metric-recording">Not recording</strong></article>
+      </section>
+
+      <section class="panel panel-surface" aria-label="BNO080 sensor readings">
+        <div class="panel-head"><div><p class="eyebrow">SENSOR REPORTS</p><h2>BNO080 传感器读数</h2></div><span>Accuracy: 0 unreliable · 1 low · 2 medium · 3 high</span></div>
+        <p class="muted">Available reports remain visible before calibration. Check report age and accuracy before using them.</p>
+        <div id="rawMetrics" class="metric-groups"></div>
+      </section>
+
+      <section class="panel panel-surface" aria-label="Kinematic readings">
+        <div class="panel-head"><div><p class="eyebrow">CURRENT SAMPLE</p><h2>运动学估计值</h2></div><span>XYZ components and magnitude</span></div>
+        <div id="kinematicMetrics" class="metric-groups"></div>
+        <p id="motionNotice" class="muted motion-notice">Numeric estimates remain visible with quality warnings. Missing data pauses velocity integration.</p>
+      </section>
+
+      <section class="panel panel-surface" aria-label="FSR readings">
+        <div class="panel-head"><div><p class="eyebrow">ADC → VOLTAGE</p><h2>FSR 压力传感器读数</h2></div><span>F<sub>0</sub>–F<sub>7</sub> · force conversion disabled</span></div>
+        <div id="forceMetrics" class="force-grid"></div>
+      </section>
+
+      <section class="panel panel-surface recording" aria-label="Experiment recording" hidden>
+        <div class="panel-head">
+          <div><p class="eyebrow">SERVER-SIDE STREAMING</p><h2>Experiment Recording</h2></div>
+          <span id="recordTime" class="record-time">00:00:00</span>
+        </div>
+        <p class="muted recording-copy">Only samples received after Start Recording are written. The local service keeps writing if this tab is slow, suspended, or closed.</p>
+        <div class="record-fields">
+          <label class="control-group">Recording folder name <small>optional</small>
+            <input id="folderName" maxlength="100" placeholder="e.g. subject-01_trial-03" />
+          </label>
+          <label class="control-group grow">Experiment notes <small>optional</small>
+            <input id="note" maxlength="1000" placeholder="Mounting, load, motion, operator…" />
+          </label>
+        </div>
+        <div class="record-actions">
+          <button id="record" type="button" disabled>Start Recording</button>
+          <button id="stop" class="secondary" type="button" disabled>Stop &amp; Save</button>
+          <strong id="recordStatus">Not recording</strong>
+        </div>
+        <p id="recordPath" class="path">Save location: local data directory</p>
+      </section>
+
+      <section class="panel panel-surface" aria-label="Kinematic charts">
+        <div class="panel-head"><div><p class="eyebrow">LIVE WAVEFORMS</p><h2>运动信号波形</h2></div><span>Bounded and downsampled for long sessions</span></div>
+        <div id="kinematicCharts" class="chart-grid"></div>
+      </section>
+
+      <section class="panel panel-surface" aria-label="FSR chart">
+        <div class="panel-head"><div><p class="eyebrow">LIVE WAVEFORMS</p><h2>FSR 信号波形</h2></div><span>F<sub>0</sub>–F<sub>7</sub> (V)</span></div>
+        <div id="mechanicalCharts" class="chart-grid single-chart"></div>
+      </section>
+
+      <footer class="muted">
+        Available BNO080 reports and all eight FSR channels are shown above. V4 recordings retain individual FSR ADC conversions and any raw IMU reports enabled by the firmware. FSR voltage is ADC / 4095 × 3.3 V. Velocity is an estimate, displayed even when quality is unverified.
+      </footer>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

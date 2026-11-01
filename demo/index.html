@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="FSR 双侧腕托受压分布交互演示。每侧四片，按 F0、F1、F3、F4 排列。所有电压均为模拟数据。"><title>FSR 腕托 · 受压分布演示</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="duo.css"><link rel="stylesheet" href="demo.css"><script src="model.js" defer></script><script src="demo.js" defer></script></head>
+<body><main class="demo-shell">
+<header class="demo-header"><div><p class="eyebrow">FSR / ARM SUPPORT</p><h1>看见手臂的接触分布</h1><p>8 片传感器 · 左右独立读数 · 共用电压标尺</p></div><nav><a id="sourceLink" href="https://github.com/HuilingP/fsr-arm-pressure-viewer" target="_blank" rel="noopener noreferrer">GitHub 源码 ↗</a><a class="download" href="fsr-frontend-source.zip" download>下载完整源码</a></nav></header>
+<div class="demo-banner"><strong>模拟演示</strong><span>所有读数都由浏览器生成，不连接真实板子。实际采集请下载源码，在连接 ESP32 的电脑上运行。</span></div>
+<section class="scenario-bar" aria-label="演示场景"><div><span class="scenario-label">选择场景</span><div class="scenario-buttons"><button data-scene="balanced" aria-pressed="true">均匀支撑</button><button data-scene="left" aria-pressed="false">偏向左侧</button><button data-scene="right" aria-pressed="false">偏向右侧</button><button data-scene="scan" aria-pressed="false">逐片按压</button><button data-scene="manual" aria-pressed="false">手动调节</button></div></div><button id="pauseDemo" class="secondary" aria-pressed="false">暂停动画</button></section>
+    <section id="pressureView" class="pressure-panel panel-surface" aria-label="FSR 模拟受压分布">
+      <header class="pressure-heading">
+        <div><p class="eyebrow">FSR / SIMULATED CONTACT MAP</p><h2>手臂接触区 · 受压分布演示</h2><p class="pressure-subtitle">按腕托上的实际贴片顺序显示 · 左右各 4 片</p></div>
+        <label class="control-group pressure-scale-control">颜色标尺上限
+          <select id="pressureRange" aria-label="颜色标尺上限">
+            <option value="0.1">0.1 V · 微小变化</option>
+            <option value="0.5">0.5 V</option>
+            <option value="1">1.0 V</option>
+            <option value="2">2.0 V</option>
+            <option value="3.3" selected>3.3 V · 全量程</option>
+          </select>
+        </label>
+      </header>
+      <div class="pressure-scene">
+        <div class="keyboard-outline" aria-hidden="true"></div>
+        <p class="pressure-orientation">↑ 键盘方向 · 坐在键盘前看</p>
+        <div class="pressure-side-headings">
+          <div><strong><i class="board-dot black"></i>左侧 · 黑色板 A</strong><span id="pressureStateA" class="pressure-connection">等待数据</span></div>
+          <div><strong><i class="board-dot white"></i>右侧 · 白色板 B</strong><span id="pressureStateB" class="pressure-connection">等待数据</span></div>
+        </div>
+        <div class="pressure-wrist-rest" aria-label="腕托贴片分布：左侧四片，中间空隙，右侧四片">
+          <div class="pressure-pads" aria-label="左侧贴片，从左到右 F0 F1 F3 F4">
+            <div id="pressureA0" class="pressure-cell unavailable" role="img" aria-label="A F0 等待数据">
+              <span class="pressure-channel">F0</span><strong id="voltageA0">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureA1" class="pressure-cell unavailable" role="img" aria-label="A F1 等待数据">
+              <span class="pressure-channel">F1</span><strong id="voltageA1">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureA3" class="pressure-cell unavailable" role="img" aria-label="A F3 等待数据">
+              <span class="pressure-channel">F3</span><strong id="voltageA3">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureA4" class="pressure-cell unavailable" role="img" aria-label="A F4 等待数据">
+              <span class="pressure-channel">F4</span><strong id="voltageA4">—</strong><span class="pressure-unit">V</span>
+            </div>
+          </div>
+          <div class="pressure-gap"><span>空隙</span><small>无测点</small></div>
+          <div class="pressure-pads" aria-label="右侧贴片，从左到右 F0 F1 F3 F4">
+            <div id="pressureB0" class="pressure-cell unavailable" role="img" aria-label="B F0 等待数据">
+              <span class="pressure-channel">F0</span><strong id="voltageB0">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureB1" class="pressure-cell unavailable" role="img" aria-label="B F1 等待数据">
+              <span class="pressure-channel">F1</span><strong id="voltageB1">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureB3" class="pressure-cell unavailable" role="img" aria-label="B F3 等待数据">
+              <span class="pressure-channel">F3</span><strong id="voltageB3">—</strong><span class="pressure-unit">V</span>
+            </div>
+            <div id="pressureB4" class="pressure-cell unavailable" role="img" aria-label="B F4 等待数据">
+              <span class="pressure-channel">F4</span><strong id="voltageB4">—</strong><span class="pressure-unit">V</span>
+            </div>
+          </div>
+        </div>
+        <div class="pressure-arm-labels"><span>左臂接触区</span><span>右臂接触区</span></div>
+        <p class="pressure-near">靠近身体的一侧</p>
+      </div>
+      <div class="pressure-legend">
+        <span>低电压</span><div class="pressure-scale"><div class="pressure-gradient" aria-hidden="true"></div><div class="pressure-ticks"><span>0 V</span><span id="pressureMid">1.65 V</span><span id="pressureMax">3.30 V</span></div></div><span>高电压</span>
+      </div>
+      <div class="pressure-summaries">
+        <article><span>左侧最高电压贴片</span><strong id="pressurePeakA">—</strong><small id="pressureDetailA">等待左侧数据</small></article>
+        <article><span>右侧最高电压贴片</span><strong id="pressurePeakB">—</strong><small id="pressureDetailB">等待右侧数据</small></article>
+      </div>
+      <p id="pressureNotice" class="pressure-notice" role="status">正在生成模拟数据。</p>
+      <p class="pressure-footnote">每个方块代表一片 FSR，颜色随电压升高而变暖；左右使用同一标尺。尚未换算为力（N）或压力（kPa），不推测片内及空隙处的分布。</p>
+    </section><section id="manualControls" class="manual-panel" hidden><h2>手动设置每片电压</h2><p>拖动滑块，观察相应方块的颜色。这里调节的是模拟电压。</p><div class="slider-groups"><div><h3>左侧 A</h3><label class="slider-row">F0<input id="sliderA0" aria-label="左侧 A F0 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueA0">0.00 V</output></label><label class="slider-row">F1<input id="sliderA1" aria-label="左侧 A F1 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueA1">0.00 V</output></label><label class="slider-row">F3<input id="sliderA3" aria-label="左侧 A F3 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueA3">0.00 V</output></label><label class="slider-row">F4<input id="sliderA4" aria-label="左侧 A F4 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueA4">0.00 V</output></label></div><div><h3>右侧 B</h3><label class="slider-row">F0<input id="sliderB0" aria-label="右侧 B F0 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueB0">0.00 V</output></label><label class="slider-row">F1<input id="sliderB1" aria-label="右侧 B F1 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueB1">0.00 V</output></label><label class="slider-row">F3<input id="sliderB3" aria-label="右侧 B F3 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueB3">0.00 V</output></label><label class="slider-row">F4<input id="sliderB4" aria-label="右侧 B F4 模拟电压" type="range" min="0" max="3.3" step="0.01" value="0"><output id="sliderValueB4">0.00 V</output></label></div></div></section><footer id="source" class="demo-footer"><div><h2>把演示接到真实硬件</h2><p>本地版支持 USB / Wi-Fi 双板采集、实时读数与波形、按次记录及 ZIP 下载。保留 F0 → F1 → F3 → F4 的贴片布局。</p></div><div><h3>运行需要</h3><p>Python 3.10+ · pyserial<br>macOS：双击 frontend/start.command<br>Windows：双击 frontend/start.bat</p><p>没有板子时，也可在本地版选择“模拟演示”。</p></div></footer>
+<p class="demo-disclaimer">电压不是力或压强；每片只提供一个读数。图中不插值推测片内或空隙处的分布。</p>
+</main></body></html>
